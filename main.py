@@ -1,14 +1,15 @@
 import logging
 import requests
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    ContextTypes,
+)
 
-# ✅ Your API Keys
+# ✅ Your API Keys (hardcoded)
 GEMINI_API_KEY = "AIzaSyASCHAAd7gtrH3Qmo2-T8HuHdMHPMmtqNw"
 BOT_TOKEN = "7508241177:AAF5URqFveHTT0KzzFJyG4qQGt4BZ56bzYg"
-
-# ✅ Configure logging
-logging.basicConfig(level=logging.INFO)
 
 # ✅ Gemini AI call function
 def ask_gemini(message):
@@ -21,7 +22,7 @@ def ask_gemini(message):
     try:
         response = requests.post(url, headers=headers, params=params, json=data)
         return response.json()['candidates'][0]['content']['parts'][0]['text']
-    except Exception as e:
+    except:
         return "❌ Gemini API Error. Try again later."
 
 # ✅ /start command
@@ -47,13 +48,13 @@ def make_feature_command(n):
 # ✅ Setup bot
 app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-# ✅ Add handlers
+# ✅ Add commands
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("ask", ask))
 
-# ✅ Add 60 feature handlers
+# ✅ Add 60 dynamic feature commands
 for i in range(1, 61):
     app.add_handler(CommandHandler(f"feature{i}", make_feature_command(i)))
 
-# ✅ Start polling
+# ✅ Run bot
 app.run_polling()
