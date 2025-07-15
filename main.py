@@ -1,63 +1,56 @@
-import os
 import logging
 import requests
 from telegram import Update
-from telegram.ext import (
-    ApplicationBuilder,
-    CommandHandler,
-    ContextTypes,
-)
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-# Setup logging
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
+# ✅ Your API Keys (hardcoded)
+GEMINI_API_KEY = "AIzaSyASCHAAd7gtrH3Qmo2-T8HuHdMHPMmtqNw"
+BOT_TOKEN = "7508241177:AAF5URqFveHTT0KzzFJyG4qQGt4BZ56bzYg"
 
-# Get environment variables
-BOT_TOKEN = os.getenv("7508241177:AAF5URqFveHTT0KzzFJyG4qQGt4BZ56bzYg")
-GEMINI_API_KEY = os.getenv("AIzaSyASCHAAd7gtrH3Qmo2-T8HuHdMHPMmtqNw
-")
-
-# Function to call Gemini API
-def ask_gemini(question):
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={GEMINI_API_KEY}"
+# ✅ Gemini AI call function
+def ask_gemini(message):
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
     headers = {"Content-Type": "application/json"}
-    payload = {
-        "contents": [
-            {
-                "parts": [{"text": question}]
-            }
-        ]
+    data = {
+        "contents": [{"parts": [{"text": message}]}]
     }
+    params = {"key": GEMINI_API_KEY}
     try:
-        response = requests.post(url, headers=headers, json=payload)
-        result = response.json()
-        return result["candidates"][0]["content"]["parts"][0]["text"]
-    except Exception as e:
-        return f"❌ Gemini error: {str(e)}"
+        response = requests.post(url, headers=headers, params=params, json=data)
+        return response.json()['candidates'][0]['content']['parts'][0]['text']
+    except:
+        return "❌ Gemini API Error. Try again later."
 
-# Start command
+# ✅ /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("👋 Welcome to Gemini Bot! Type any command from /feature1 to /feature60.")
+    await update.message.reply_text("👋 Welcome to Gemini AI Bot!\nUse /ask <your question> or /feature1 to /feature60.")
 
-# Dynamic feature handlers
-def make_feature_handler(number):
+# ✅ /ask command
+async def ask(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    question = " ".join(context.args)
+    if not question:
+        await update.message.reply_text("❗ Use like: /ask What is AI?")
+        return
+    reply = ask_gemini(question)
+    await update.message.reply_text(reply)
+
+# ✅ Dynamic feature command
+def make_feature_command(n):
     async def feature(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        prompt = f"Please explain feature number {number} in detail:"
-        reply = ask_gemini(prompt)
-        await update.message.reply_text(reply)
+        response = ask_gemini(f"Explain feature {n} in detail.")
+        await update.message.reply_text(response)
     return feature
 
-# Main app setup
+# ✅ Setup bot
 app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-# Register /start command
+# Add basic commands
 app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("ask", ask))
 
-# Register all 60 feature commands
+# Add 60 dynamic feature commands
 for i in range(1, 61):
-    app.add_handler(CommandHandler(f"feature{i}", make_feature_handler(i)))
+    app.add_handler(CommandHandler(f"feature{i}", make_feature_command(i)))
 
-# Run bot
+# ✅ Start the bot
 app.run_polling()
