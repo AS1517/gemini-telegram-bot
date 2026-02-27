@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EASY DECOR</title>
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#111;
+    color:white;
+    text-align:center;
+}
+header{
+    background:black;
+    padding:20px;
+    font-size:28px;
+    font-weight:bold;
+    letter-spacing:2px;
+}
+.logo{
+    font-size:18px;
+    color:#ccc;
+}
+.container{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+.card{
+    background:#1c1c1c;
+    margin:20px;
+    padding:15px;
+    border-radius:12px;
+    width:280px;
+    box-shadow:0 0 15px rgba(0,0,0,0.5);
+}
+.card img{
+    width:100%;
+    border-radius:10px;
+}
+.colors button{
+    padding:8px 12px;
+    margin:5px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+.order{
+    background:#25D366;
+    color:white;
+    padding:10px 15px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+    margin-top:10px;
+}
+footer{
+    margin-top:40px;
+    padding:20px;
+    background:black;
+    color:#888;
+}
+</style>
+
+<script>
+function orderNow(product, color){
+    var number = "971565303941";
+    var message = "I want " + product + " in " + color + " colour.";
+    var url = "https://wa.me/" + number + "?text=" + encodeURIComponent(message);
+    window.open(url, '_blank');
+}
+</script>
+
+</head>
+<body>
+
+<header>
+EASY DECOR
+<div class="logo">Premium Interior & Decor Works</div>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h3>Wall Panel Design</h3>
+<img src="https://via.placeholder.com/300" alt="Wall Panel">
+<div class="colors">
+<button onclick="orderNow('Wall Panel Design','White')">White</button>
+<button onclick="orderNow('Wall Panel Design','Black')">Black</button>
+<button onclick="orderNow('Wall Panel Design','Brown')">Brown</button>
+</div>
+<button class="order" onclick="orderNow('Wall Panel Design','Selected')">Order on WhatsApp</button>
+</div>
+
+<div class="card">
+<h3>Ceiling Decor</h3>
+<img src="https://via.placeholder.com/300" alt="Ceiling Decor">
+<div class="colors">
+<button onclick="orderNow('Ceiling Decor','Gold')">Gold</button>
+<button onclick="orderNow('Ceiling Decor','Silver')">Silver</button>
+<button onclick="orderNow('Ceiling Decor','Wood')">Wood</button>
+</div>
+<button class="order" onclick="orderNow('Ceiling Decor','Selected')">Order on WhatsApp</button>
+</div>
+
+</div>
+
+<footer>
+© 2026 EASY DECOR | Contact: 0565303941
+</footer>
+
+</body>
+</html>
